@@ -1,0 +1,7 @@
+{
+  "name": "VitalStrike",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
