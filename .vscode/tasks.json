@@ -1,0 +1,36 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "serve",
+            "command": "ionic",
+            "type": "shell",
+            "args": [
+                "serve"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "build",
+            "command": "ionic",
+            "type": "shell",
+            "args": [
+                "build",
+                "--prod",
+            ],
+            "problemMatcher": [],
+        },
+    ],
+    "inputs": [
+        {
+            "type": "pickString",
+            "id": "environment",
+            "description": "環境変数",
+            "options": [
+                "prod",
+                "Staging",
+                "Production"
+            ]
+        }
+    ]
+}

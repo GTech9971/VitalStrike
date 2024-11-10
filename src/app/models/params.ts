@@ -15,7 +15,7 @@
  * =============================================================================
  */
 import * as bodySegmentation from '@tensorflow-models/body-segmentation';
-import * as poseDetection from '@tensorflow-models/pose-detection';
+
 
 export const DEFAULT_LINE_WIDTH = 2;
 export const DEFAULT_RADIUS = 4;
@@ -95,7 +95,6 @@ export const MODEL_BACKEND_MAP = {
     [bodySegmentation.SupportedModels.MediaPipeSelfieSegmentation]:
         ['mediapipe-gpu', 'tfjs-webgl'],
     [bodySegmentation.SupportedModels.BodyPix]: ['tfjs-webgl'],
-    [poseDetection.SupportedModels.BlazePose]: ['mediapipe-gpu', 'tfjs-webgl'],
 }
 
 export const TUNABLE_FLAG_NAME_MAP = {
