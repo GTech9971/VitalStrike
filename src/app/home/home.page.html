@@ -1,8 +1,13 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" *ngIf="this.segmenter$| async isReady">
   <ion-toolbar>
     <ion-title>
       Blank
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="this.onClickShoot()">
+        Shoot
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

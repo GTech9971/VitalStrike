@@ -1,12 +1,13 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import { Component, Inject, OnDestroy, ViewChild } from '@angular/core';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonButton, } from '@ionic/angular/standalone';
 import { BodySegmentService } from '../services/body-segment.service';
 import { Segmentation } from '@tensorflow-models/body-segmentation/dist/shared/calculators/interfaces/common_interfaces';
-import { STATE } from '../models/params';
 import { CameraComponent } from '../camera/camera.component';
 import { BODY_SEGMENT_INPUT_PROVIDER, BodySegmentInputProvider } from '../interfaces/body-segment-input-provider';
 import { ImageBodySegmentInputProvider } from '../services/image-body-segment-input-provider';
-import { filter, shareReplay, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { filter, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { BodySegmenter } from '@tensorflow-models/body-segmentation';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
@@ -14,14 +15,17 @@ import { filter, shareReplay, Subject, switchMap, takeUntil, tap } from 'rxjs';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, CameraComponent],
+  imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, CameraComponent, IonButtons, IonButton],
   providers: [
     { provide: BODY_SEGMENT_INPUT_PROVIDER, useClass: ImageBodySegmentInputProvider }
   ]
 })
-export class HomePage implements AfterViewInit, OnDestroy {
+export class HomePage implements OnDestroy {
 
   private readonly destroy$: Subject<void> = new Subject<void>();
+  readonly segmenter$: Observable<BodySegmenter>;
+
+
 
   @ViewChild('canvas') canvas!: HTMLCanvasElement;
 
@@ -29,18 +33,27 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
   constructor(private readonly service: BodySegmentService,
     @Inject(BODY_SEGMENT_INPUT_PROVIDER) private readonly inputProvider: BodySegmentInputProvider) {
-  }
-  ngAfterViewInit(): void {
-    this.service.createSegment()
+
+    this.segmenter$ = this.service.createSegment()
       .pipe(
         takeUntil(this.destroy$),
-        switchMap(() => this.inputProvider.provide()),
+        tap(segmenter => console.log(segmenter)),
+        shareReplay(),
+      );
+  }
+
+
+  onClickShoot() {
+    this.inputProvider.provide()
+      .pipe(
+        takeUntil(this.destroy$),
         switchMap(imageData => this.service.result(imageData)),
         filter((segmentation): segmentation is Segmentation[] => segmentation !== null),
         switchMap(segmentation => this.service.toImageData('coloredMask', segmentation)),
-      ).subscribe({
+      )
+      .subscribe({
         next: async (imageData) => {
-          console.log(imageData);
+          console.log('render');
           await this.camera.renderResult('coloredMask', imageData);
         },
         error(err) {
@@ -53,19 +66,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  async render() {
-    // const input = this.inputProvider.provide();
-
-    // const segmentation: Segmentation[] | null = await this.service.result(input);
-
-    // // The null check makes sure the UI is not in the middle of changing to a
-    // // different model. If during model change, the result is from an old model,
-    // // which shouldn't be rendered.
-    // if (segmentation && segmentation.length > 0) {
-    //   this.camera.drawToCanvas();
-    // }
   }
 
 }

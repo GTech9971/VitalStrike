@@ -7,6 +7,7 @@ import { Observable } from "rxjs";
 export class ImageBodySegmentInputProvider implements BodySegmentInputProvider {
     public provide(): Observable<BodySegmenterInput> {
         return new Observable<BodySegmenterInput>((observer) => {
+            console.log('load image');
             const image = new Image();
             image.src = "assets/portrait.jpg";
             image.crossOrigin = 'anonymous'

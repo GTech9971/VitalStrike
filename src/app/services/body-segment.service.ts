@@ -34,6 +34,7 @@ export class BodySegmentService {
 
     public createSegment(): Observable<bodySegmentation.BodySegmenter> {
         return new Observable((observer) => {
+            console.log('load model');
             if (this.segmenter !== null) {
                 observer.next(this.segmenter);
                 observer.complete();
