@@ -8,6 +8,7 @@ import { ImageBodySegmentInputProvider } from '../services/image-body-segment-in
 import { filter, Observable, shareReplay, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { BodySegmenter } from '@tensorflow-models/body-segmentation';
 import { CommonModule } from '@angular/common';
+import { HitService } from '../services/hit.service';
 
 
 @Component({
@@ -22,16 +23,16 @@ import { CommonModule } from '@angular/common';
 })
 export class HomePage implements OnDestroy {
 
-  private readonly destroy$: Subject<void> = new Subject<void>();
-  readonly segmenter$: Observable<BodySegmenter>;
-
-
-
   @ViewChild('canvas') canvas!: HTMLCanvasElement;
 
   @ViewChild('camera') camera!: CameraComponent;
 
+  private readonly destroy$: Subject<void> = new Subject<void>();
+  readonly segmenter$: Observable<BodySegmenter>;
+
+
   constructor(private readonly service: BodySegmentService,
+    private readonly hitService: HitService,
     @Inject(BODY_SEGMENT_INPUT_PROVIDER) private readonly inputProvider: BodySegmentInputProvider) {
 
     this.segmenter$ = this.service.createSegment()

@@ -4,11 +4,26 @@ import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalo
 
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
+import { provideHttpClient } from '@angular/common/http';
 
-bootstrapApplication(AppComponent, {
-  providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
-  ],
+import { isDevMode } from '@angular/core';
+
+async function prepareApp() {
+  if (isDevMode()) {
+    const { worker } = await import('./mocks/browser');
+    return worker.start();
+  }
+  return Promise.resolve();
+}
+
+
+prepareApp().then(() => {
+  bootstrapApplication(AppComponent, {
+    providers: [
+      { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+      provideHttpClient(),
+      provideIonicAngular(),
+      provideRouter(routes, withPreloading(PreloadAllModules)),
+    ],
+  });
 });

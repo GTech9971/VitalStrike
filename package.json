@@ -29,6 +29,7 @@
     "@ionic/angular": "^8.0.0",
     "@tensorflow-models/body-segmentation": "^1.0.2",
     "ionicons": "^7.2.1",
+    "msw": "^2.6.4",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"
@@ -61,5 +62,10 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.4.0"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "msw": {
+    "workerDirectory": [
+      "src"
+    ]
+  }
 }
